@@ -87,11 +87,14 @@ extension _FluentSQLiteDatabase: Database {
             })
             guard 
                 schema.createConstraints.isEmpty,
-                schema.updateFields.isEmpty, 
-                schema.deleteFields.isEmpty,
+                schema.updateFields.isEmpty,
                 schema.deleteConstraints.isEmpty
             else {
                 return self.eventLoop.makeFailedFuture(FluentSQLiteError.unsupportedAlter)
+            }
+
+            if !schema.deleteFields.isEmpty {
+                break
             }
 
             // If only enum updates, then skip.
